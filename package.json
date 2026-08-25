@@ -1,0 +1,37 @@
+{
+  "name": "platform",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "npm@11.16.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "supabase:login": "supabase login",
+    "supabase:link": "supabase link",
+    "supabase:migrations": "supabase migration list --linked",
+    "supabase:push": "supabase db push --linked",
+    "supabase:types": "npm run generate --workspace=@platform/database-types",
+    "supabase:verify": "node scripts/verify-supabase-connection.mjs"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.3",
+    "prettier": "^3.4.2",
+    "supabase": "^2.6.8",
+    "vitest": "^3.0.5"
+  }
+}

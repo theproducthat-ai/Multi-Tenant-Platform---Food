@@ -1,0 +1,16 @@
+{
+  "name": "@platform/database-types",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "generate": "supabase gen types typescript --linked > src/database.ts"
+  },
+  "devDependencies": {
+    "@platform/typescript-config": "*",
+    "typescript": "^5.7.3"
+  }
+}

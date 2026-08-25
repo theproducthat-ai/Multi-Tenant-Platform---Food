@@ -1,0 +1,3 @@
+-- Local development seed data.
+-- No business tables exist yet (Module 0 — environment setup only).
+-- Module 1 will add real schema migrations and, where useful, seed data here.
