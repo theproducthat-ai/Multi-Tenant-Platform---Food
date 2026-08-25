@@ -1,7 +1,10 @@
 # Security Model
 
-Status: directional. Auth, RLS, and device trust are **not implemented yet** — this document
-records the rules the implementation must follow when those modules are built.
+Status: directional for auth and device trust — **not implemented yet**. RLS's *Module 1 posture*
+(enabled on every tenant-owned table, default deny, no membership-based policies yet) **is
+implemented** as of Module 1B — see the "Row Level Security — Module 1 posture" section below and
+`docs/ORGANISATION_MODEL.md`. This document records the rules the rest of the implementation must
+follow when those modules are built.
 
 ## Remote DEV/STAGING Supabase environment
 
@@ -78,10 +81,42 @@ Rules:
 5. Cross-tenant isolation must have explicit tests (Tenant A must never be able to read/write
    Tenant B's rows) once tenant-owned tables exist — this is a Module 1+ deliverable.
 
+## Row Level Security — Module 1 posture (implemented)
+
+Module 1 introduced the first real tenant-owned tables (`docs/ORGANISATION_MODEL.md`). Since no
+membership model exists yet (that's Module 2), the posture is deliberately simple and is now live
+on every one of those tables:
+
+- RLS is **enabled** on every tenant-owned table (`tenants`, `organisations`,
+  `organisation_units`, `organisation_relationships`, `portfolios`, `portfolio_members`,
+  `properties`, `sites`, `site_areas`, `service_locations`, `organisation_resource_assignments`,
+  `external_identifiers`).
+- **Zero policies** exist for `anon`/`authenticated` on any of them. Enabling RLS with no matching
+  policy is default-deny in Postgres — `anon` and `authenticated` can read and write nothing on
+  these tables, full stop, with no membership concept to key a policy off yet.
+- The 8 reference registries (`organisation_types` and its siblings) are the one exception: they
+  carry a single `SELECT USING (true)` policy for `anon`/`authenticated` — non-sensitive platform
+  metadata, needed to render pickers even before Module 2 exists — with no write policy for those
+  roles.
+- `service_role` (the secret key) bypasses RLS entirely, by Postgres role attribute, not by
+  policy. During Module 1, the Platform API using the secret key is the *only* thing that can read
+  or write these tables.
+- Verified against the live DEV/STAGING project via `scripts/verify-module-1-schema.sql`
+  (`npm run verify:module-1`), not just written and trusted — satisfying rule 3 above for this
+  module's tables. Re-verified in Module 1C (`scripts/verify-module-1c-scenarios.sql`) against 8
+  scenario tenants' worth of fixture data, with the same default-deny result. Module 2 will *add*
+  membership-based policies to these tables; it will not change this schema.
+
 ## Tenant isolation
 
-- Isolation is enforced primarily through RLS keyed on tenant/site/outlet identifiers present
-  in the authenticated user's claims or a joined membership table.
+- Target-state isolation is enforced primarily through RLS keyed on tenant/site/outlet
+  identifiers present in the authenticated user's claims or a joined membership table (Module 2+).
+  Until then, Module 1's default-deny posture above means isolation from `anon`/`authenticated` is
+  total rather than claim-based. Independently of RLS, cross-tenant *referential* integrity is
+  enforced at the database level via composite foreign keys on every parent/child relationship
+  (e.g. `site_areas` can only reference a `site` in its own tenant) — see
+  `docs/ORGANISATION_MODEL.md`. This holds regardless of which role is querying, including
+  `service_role`.
 - No query path should rely on the client to self-report which tenant it belongs to for
   authorization purposes — the server derives it from the authenticated session.
 

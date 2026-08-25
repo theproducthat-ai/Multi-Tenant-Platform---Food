@@ -39,7 +39,1221 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      external_identifiers: {
+        Row: {
+          created_at: string
+          external_type: string
+          external_value: string
+          id: string
+          is_primary: boolean
+          organisation_id: string | null
+          organisation_unit_id: string | null
+          organisation_unit_organisation_id: string | null
+          portfolio_id: string | null
+          property_id: string | null
+          service_location_id: string | null
+          service_location_site_id: string | null
+          site_area_id: string | null
+          site_area_site_id: string | null
+          site_id: string | null
+          source_system: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          external_type: string
+          external_value: string
+          id?: string
+          is_primary?: boolean
+          organisation_id?: string | null
+          organisation_unit_id?: string | null
+          organisation_unit_organisation_id?: string | null
+          portfolio_id?: string | null
+          property_id?: string | null
+          service_location_id?: string | null
+          service_location_site_id?: string | null
+          site_area_id?: string | null
+          site_area_site_id?: string | null
+          site_id?: string | null
+          source_system: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          external_type?: string
+          external_value?: string
+          id?: string
+          is_primary?: boolean
+          organisation_id?: string | null
+          organisation_unit_id?: string | null
+          organisation_unit_organisation_id?: string | null
+          portfolio_id?: string | null
+          property_id?: string | null
+          service_location_id?: string | null
+          service_location_site_id?: string | null
+          site_area_id?: string | null
+          site_area_site_id?: string | null
+          site_id?: string | null
+          source_system?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "external_identifiers_org_unit_fk"
+            columns: [
+              "tenant_id",
+              "organisation_unit_organisation_id",
+              "organisation_unit_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "organisation_units"
+            referencedColumns: ["tenant_id", "organisation_id", "id"]
+          },
+          {
+            foreignKeyName: "external_identifiers_organisation_fk"
+            columns: ["tenant_id", "organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "external_identifiers_portfolio_fk"
+            columns: ["tenant_id", "portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "external_identifiers_property_fk"
+            columns: ["tenant_id", "property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "external_identifiers_service_location_fk"
+            columns: [
+              "tenant_id",
+              "service_location_site_id",
+              "service_location_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "service_locations"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "external_identifiers_site_area_fk"
+            columns: ["tenant_id", "site_area_site_id", "site_area_id"]
+            isOneToOne: false
+            referencedRelation: "site_areas"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "external_identifiers_site_fk"
+            columns: ["tenant_id", "site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "external_identifiers_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisation_relationship_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      organisation_relationships: {
+        Row: {
+          created_at: string
+          effective_from: string
+          effective_until: string | null
+          id: string
+          relationship_type_id: string
+          source_organisation_id: string
+          status: string
+          target_organisation_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          relationship_type_id: string
+          source_organisation_id: string
+          status?: string
+          target_organisation_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          relationship_type_id?: string
+          source_organisation_id?: string
+          status?: string
+          target_organisation_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisation_relationships_relationship_type_id_fkey"
+            columns: ["relationship_type_id"]
+            isOneToOne: false
+            referencedRelation: "organisation_relationship_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organisation_relationships_source_fk"
+            columns: ["tenant_id", "source_organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "organisation_relationships_target_fk"
+            columns: ["tenant_id", "target_organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "organisation_relationships_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisation_resource_assignments: {
+        Row: {
+          created_at: string
+          effective_from: string
+          effective_until: string | null
+          id: string
+          organisation_id: string
+          property_id: string | null
+          role_type_id: string
+          service_location_id: string | null
+          service_location_site_id: string | null
+          site_area_id: string | null
+          site_area_site_id: string | null
+          site_id: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          organisation_id: string
+          property_id?: string | null
+          role_type_id: string
+          service_location_id?: string | null
+          service_location_site_id?: string | null
+          site_area_id?: string | null
+          site_area_site_id?: string | null
+          site_id?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          organisation_id?: string
+          property_id?: string | null
+          role_type_id?: string
+          service_location_id?: string | null
+          service_location_site_id?: string | null
+          site_area_id?: string | null
+          site_area_site_id?: string | null
+          site_id?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ora_organisation_fk"
+            columns: ["tenant_id", "organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "ora_property_fk"
+            columns: ["tenant_id", "property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "ora_service_location_fk"
+            columns: [
+              "tenant_id",
+              "service_location_site_id",
+              "service_location_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "service_locations"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "ora_site_area_fk"
+            columns: ["tenant_id", "site_area_site_id", "site_area_id"]
+            isOneToOne: false
+            referencedRelation: "site_areas"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "ora_site_fk"
+            columns: ["tenant_id", "site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "organisation_resource_assignments_role_type_id_fkey"
+            columns: ["role_type_id"]
+            isOneToOne: false
+            referencedRelation: "organisation_resource_role_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organisation_resource_assignments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisation_resource_role_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      organisation_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      organisation_unit_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      organisation_units: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          lifecycle_status: string
+          name: string
+          organisation_id: string
+          organisation_unit_type_id: string
+          parent_organisation_unit_id: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          lifecycle_status?: string
+          name: string
+          organisation_id: string
+          organisation_unit_type_id: string
+          parent_organisation_unit_id?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          lifecycle_status?: string
+          name?: string
+          organisation_id?: string
+          organisation_unit_type_id?: string
+          parent_organisation_unit_id?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisation_units_organisation_fk"
+            columns: ["tenant_id", "organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "organisation_units_organisation_unit_type_id_fkey"
+            columns: ["organisation_unit_type_id"]
+            isOneToOne: false
+            referencedRelation: "organisation_unit_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organisation_units_parent_fk"
+            columns: [
+              "tenant_id",
+              "organisation_id",
+              "parent_organisation_unit_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "organisation_units"
+            referencedColumns: ["tenant_id", "organisation_id", "id"]
+          },
+          {
+            foreignKeyName: "organisation_units_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisations: {
+        Row: {
+          code: string
+          country_of_registration_code: string | null
+          created_at: string
+          id: string
+          lifecycle_status: string
+          name: string
+          organisation_type_id: string
+          parent_organisation_id: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          country_of_registration_code?: string | null
+          created_at?: string
+          id?: string
+          lifecycle_status?: string
+          name: string
+          organisation_type_id: string
+          parent_organisation_id?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          country_of_registration_code?: string | null
+          created_at?: string
+          id?: string
+          lifecycle_status?: string
+          name?: string
+          organisation_type_id?: string
+          parent_organisation_id?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisations_organisation_type_id_fkey"
+            columns: ["organisation_type_id"]
+            isOneToOne: false
+            referencedRelation: "organisation_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organisations_parent_fk"
+            columns: ["tenant_id", "parent_organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "organisations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolio_members: {
+        Row: {
+          created_at: string
+          effective_from: string
+          effective_until: string | null
+          id: string
+          organisation_id: string | null
+          organisation_unit_id: string | null
+          organisation_unit_organisation_id: string | null
+          portfolio_id: string
+          property_id: string | null
+          service_location_id: string | null
+          service_location_site_id: string | null
+          site_area_id: string | null
+          site_area_site_id: string | null
+          site_id: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          organisation_id?: string | null
+          organisation_unit_id?: string | null
+          organisation_unit_organisation_id?: string | null
+          portfolio_id: string
+          property_id?: string | null
+          service_location_id?: string | null
+          service_location_site_id?: string | null
+          site_area_id?: string | null
+          site_area_site_id?: string | null
+          site_id?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          organisation_id?: string | null
+          organisation_unit_id?: string | null
+          organisation_unit_organisation_id?: string | null
+          portfolio_id?: string
+          property_id?: string | null
+          service_location_id?: string | null
+          service_location_site_id?: string | null
+          site_area_id?: string | null
+          site_area_site_id?: string | null
+          site_id?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_members_org_unit_fk"
+            columns: [
+              "tenant_id",
+              "organisation_unit_organisation_id",
+              "organisation_unit_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "organisation_units"
+            referencedColumns: ["tenant_id", "organisation_id", "id"]
+          },
+          {
+            foreignKeyName: "portfolio_members_organisation_fk"
+            columns: ["tenant_id", "organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "portfolio_members_portfolio_fk"
+            columns: ["tenant_id", "portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "portfolio_members_property_fk"
+            columns: ["tenant_id", "property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "portfolio_members_service_location_fk"
+            columns: [
+              "tenant_id",
+              "service_location_site_id",
+              "service_location_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "service_locations"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "portfolio_members_site_area_fk"
+            columns: ["tenant_id", "site_area_site_id", "site_area_id"]
+            isOneToOne: false
+            referencedRelation: "site_areas"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "portfolio_members_site_fk"
+            columns: ["tenant_id", "site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "portfolio_members_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolios: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          lifecycle_status: string
+          name: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lifecycle_status?: string
+          name: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lifecycle_status?: string
+          name?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolios_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      properties: {
+        Row: {
+          address_line_1: string | null
+          address_line_2: string | null
+          administrative_area: string | null
+          code: string
+          country_code: string | null
+          created_at: string
+          id: string
+          latitude: number | null
+          lifecycle_status: string
+          locality: string | null
+          longitude: number | null
+          name: string
+          postal_code: string | null
+          property_type_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          administrative_area?: string | null
+          code: string
+          country_code?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          lifecycle_status?: string
+          locality?: string | null
+          longitude?: number | null
+          name: string
+          postal_code?: string | null
+          property_type_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          administrative_area?: string | null
+          code?: string
+          country_code?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          lifecycle_status?: string
+          locality?: string | null
+          longitude?: number | null
+          name?: string
+          postal_code?: string | null
+          property_type_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "properties_property_type_id_fkey"
+            columns: ["property_type_id"]
+            isOneToOne: false
+            referencedRelation: "property_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "properties_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_location_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_locations: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          is_consumer_facing: boolean
+          lifecycle_status: string
+          name: string
+          parent_service_location_id: string | null
+          service_location_type_id: string
+          site_area_id: string | null
+          site_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          is_consumer_facing?: boolean
+          lifecycle_status?: string
+          name: string
+          parent_service_location_id?: string | null
+          service_location_type_id: string
+          site_area_id?: string | null
+          site_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          is_consumer_facing?: boolean
+          lifecycle_status?: string
+          name?: string
+          parent_service_location_id?: string | null
+          service_location_type_id?: string
+          site_area_id?: string | null
+          site_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_locations_parent_fk"
+            columns: ["tenant_id", "site_id", "parent_service_location_id"]
+            isOneToOne: false
+            referencedRelation: "service_locations"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "service_locations_service_location_type_id_fkey"
+            columns: ["service_location_type_id"]
+            isOneToOne: false
+            referencedRelation: "service_location_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_locations_site_area_fk"
+            columns: ["tenant_id", "site_id", "site_area_id"]
+            isOneToOne: false
+            referencedRelation: "site_areas"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "service_locations_site_fk"
+            columns: ["tenant_id", "site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "service_locations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_area_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_areas: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          lifecycle_status: string
+          name: string
+          parent_site_area_id: string | null
+          site_area_type_id: string
+          site_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          lifecycle_status?: string
+          name: string
+          parent_site_area_id?: string | null
+          site_area_type_id: string
+          site_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          lifecycle_status?: string
+          name?: string
+          parent_site_area_id?: string | null
+          site_area_type_id?: string
+          site_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_areas_parent_fk"
+            columns: ["tenant_id", "site_id", "parent_site_area_id"]
+            isOneToOne: false
+            referencedRelation: "site_areas"
+            referencedColumns: ["tenant_id", "site_id", "id"]
+          },
+          {
+            foreignKeyName: "site_areas_site_area_type_id_fkey"
+            columns: ["site_area_type_id"]
+            isOneToOne: false
+            referencedRelation: "site_area_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_areas_site_fk"
+            columns: ["tenant_id", "site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "site_areas_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_types: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sites: {
+        Row: {
+          address_line_1: string | null
+          address_line_2: string | null
+          administrative_area: string | null
+          code: string
+          country_code: string | null
+          created_at: string
+          currency_code: string | null
+          id: string
+          latitude: number | null
+          lifecycle_status: string
+          locale: string | null
+          locality: string | null
+          longitude: number | null
+          mode: string
+          name: string
+          postal_code: string | null
+          property_id: string | null
+          site_type_id: string
+          tenant_id: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          administrative_area?: string | null
+          code: string
+          country_code?: string | null
+          created_at?: string
+          currency_code?: string | null
+          id?: string
+          latitude?: number | null
+          lifecycle_status?: string
+          locale?: string | null
+          locality?: string | null
+          longitude?: number | null
+          mode?: string
+          name: string
+          postal_code?: string | null
+          property_id?: string | null
+          site_type_id: string
+          tenant_id: string
+          timezone: string
+          updated_at?: string
+        }
+        Update: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          administrative_area?: string | null
+          code?: string
+          country_code?: string | null
+          created_at?: string
+          currency_code?: string | null
+          id?: string
+          latitude?: number | null
+          lifecycle_status?: string
+          locale?: string | null
+          locality?: string | null
+          longitude?: number | null
+          mode?: string
+          name?: string
+          postal_code?: string | null
+          property_id?: string | null
+          site_type_id?: string
+          tenant_id?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sites_property_fk"
+            columns: ["tenant_id", "property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["tenant_id", "id"]
+          },
+          {
+            foreignKeyName: "sites_site_type_id_fkey"
+            columns: ["site_type_id"]
+            isOneToOne: false
+            referencedRelation: "site_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sites_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          created_at: string
+          default_currency_code: string | null
+          default_locale: string | null
+          default_timezone: string | null
+          id: string
+          lifecycle_status: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_currency_code?: string | null
+          default_locale?: string | null
+          default_timezone?: string | null
+          id?: string
+          lifecycle_status?: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_currency_code?: string | null
+          default_locale?: string | null
+          default_timezone?: string | null
+          id?: string
+          lifecycle_status?: string
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

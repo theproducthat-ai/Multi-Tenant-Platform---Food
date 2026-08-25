@@ -1,8 +1,13 @@
 # Platform Architecture
 
-Status: **directional** — describes the intended shape of the system. Nothing beyond
-Module 0 (environment setup) is implemented yet. See `docs/BUILD_STATUS.md` for what
-actually exists today.
+Status: **directional for everything except the data model** — describes the intended shape of
+the system. As of Module 1 (1A design, 1B implementation, 1C scenario validation), the global
+multi-tenancy/organisation/operating-structure schema described in `docs/ORGANISATION_MODEL.md` is
+implemented, live on the DEV/STAGING Supabase project, and validated against 8 distinct global
+industry scenarios (food service, global enterprise, conglomerate, property/realtor, mall,
+hospital, education, manufacturing) with no schema forks or client-specific columns. The Platform
+API, auth/membership, configuration engine, and every product module remain directional. See
+`docs/BUILD_STATUS.md` for what actually exists today.
 
 ## High-level flow
 
@@ -68,7 +73,8 @@ platform/
 │   ├── schemas/             shared Zod schemas (API contracts, config shapes)
 │   ├── config/              shared env/config loading
 │   ├── api-client/          typed client for calling the Platform API
-│   ├── database-types/      generated Supabase types (real, tableless schema as of Module 0A)
+│   ├── database-types/      generated Supabase types (real schema as of Module 1B — tenants,
+│   │                        organisations, sites, and the rest of the organisation model)
 │   ├── supabase-client/      browser/server Supabase client factories (infra only)
 │   ├── eslint-config/        shared ESLint flat config
 │   └── typescript-config/    shared strict tsconfig bases

@@ -2,6 +2,97 @@
 
 Records architecturally significant decisions. Newest first.
 
+## 2026-08-25 — Module 1C: Scenario Validation & Module 1 Closure
+
+- **Module 1 is closed as complete** (1A design → 1B implementation → 1C validation). See
+  `docs/ORGANISATION_MODEL.md` for the final reference, `docs/MODULE_1A_ARCHITECTURE_PROPOSAL.md`
+  for the design record.
+- **8 fictional global scenarios validated live against DEV/STAGING with zero schema changes**:
+  food-service provider/client ecosystem, global enterprise (US/India/Singapore), conglomerate
+  (Group→Company→Business Unit→Region→Site), multi-tenant property/realtor, mall, hospital,
+  school/university, manufacturing. `scripts/verify-module-1c-scenarios.sql` — 35/35 assertions
+  passing, one self-rolling-back transaction, zero residual fixture data confirmed by row-count
+  check afterward. No `is_hospital`/`is_mall`/client-ID-style column was added anywhere to make
+  any scenario pass — every difference is represented through the existing typed
+  organisations/sites/site-areas/service-locations/relationships/assignments data, not schema.
+- **No architectural gap was found.** Every scenario's structural claims (provider/client
+  independence, different operators per site, ownership vs. management as independent coexisting
+  facts, shared vs. private service locations distinguished by attachment point not a flag, brand
+  vs. physical-store separation, clinical department vs. physical ward separation) held using only
+  Module 1B's existing tables. The full deferred-capability list (users, membership, persona,
+  roles, devices, configuration, policy, marketplace, delivery destinations, business calendars,
+  templates, tags, NFC, facial recognition, payments, kitchen networks) was re-confirmed to have a
+  clean, additive attachment point — none would require breaking or redesigning Module 1.
+- **No server-side domain/query helper code was written.** `apps/api` has no domain modules and no
+  auth layer yet, so building query helpers now would mean designing an abstraction with no real
+  caller and no authorization context to enforce — deferred to whichever module first builds a
+  consumer for them. The query *shapes* (recursive ancestor/descendant walks, per-target
+  partial-index lookups) are documented in `docs/ORGANISATION_MODEL.md` instead.
+- **Performance reviewed conceptually against all 8 scenarios; no missing index found**, and none
+  added speculatively — the existing index set (tenant_id, parent columns, per-target partial
+  indexes) covers every query shape the scenarios exercised. The one previously-identified future
+  optimization (materialized path/`ltree` for very deep/wide hierarchies) remains appropriately
+  deferred, with no new evidence that it's needed yet.
+- **Test-script-only bugs found and fixed during 1C** (not schema bugs): a hardcoded past date in
+  an effective-dating history test tripped the (correctly-working) date-range CHECK it wasn't
+  meant to be testing. Fixed in the test script; no schema or migration change resulted.
+
+## 2026-08-25 — Module 1A/1B: Global Organisation & Operating Structure
+
+- **Architecture approved and implemented**: `docs/MODULE_1A_ARCHITECTURE_PROPOSAL.md` (the full
+  design, alternatives considered, and every resolved decision) and `docs/ORGANISATION_MODEL.md`
+  (the reference for the live schema) are the durable record — this entry only calls out the
+  decisions with the widest blast radius.
+- **Composite foreign keys, not triggers, for cross-tenant safety.** Every parent/child
+  relationship in this schema (e.g. `site_areas.site_id` → `sites`) uses a composite FK of the
+  shape `FOREIGN KEY (tenant_id, x_id) REFERENCES parent (tenant_id, id)`, making a cross-tenant
+  reference a constraint violation rather than an application-layer concern. The same mechanism
+  extends to same-organisation (`organisation_units`) and same-site
+  (`site_areas`/`service_locations`) safety by including that extra column in the key.
+- **Scope Model: typed nullable columns + exactly-one-non-null CHECK** (not a central polymorphic
+  registry table) is the chosen pattern for every present and future table that needs to target
+  "any one of several resource types" (`portfolio_members`, `organisation_resource_assignments`,
+  `external_identifiers` today). Future modules (configuration, access, branding, NFC policy,
+  reporting) should repeat this pattern per table rather than sharing one generic table.
+- **Hierarchy cycle prevention via dedicated `BEFORE INSERT OR UPDATE` triggers** (one per
+  hierarchy — organisations, organisation units, site areas, service locations), each a plain
+  recursive CTE, chosen over a generic dynamic-SQL trigger for reviewability, and over materialized
+  path/`ltree`/closure tables as unjustified by any current query need.
+- **No hard-delete path anywhere in this schema, with no exception** — every FK uses
+  `ON DELETE RESTRICT` (the one narrow exception being `portfolio_members` cascading from its own
+  `portfolio_id`). Removal is always `lifecycle_status = 'archived'`. This binds future modules
+  too: no FK from a later table into this layer may use `CASCADE` to work around it.
+- **RLS: enabled everywhere, zero policies for `anon`/`authenticated`** on tenant-owned tables
+  (default deny — no membership model exists until Module 2); reference registries get one
+  `SELECT USING (true)` policy. See `docs/SECURITY_MODEL.md`.
+- **Effective-dating granularity is intentionally mixed**, governed by "does this fact have a
+  single associated timezone": `organisation_relationships` uses `date` (org-to-org, no inherent
+  timezone); `organisation_resource_assignments` and `portfolio_members` use `timestamptz`
+  (anchored to a specific site, or an operational action where the exact moment matters).
+- **Bug found and fixed during Module 1B verification**: `external_identifiers`'s originally
+  proposed single wide `UNIQUE` constraint across several nullable target columns never actually
+  caught duplicates — Postgres treats `NULL` as distinct from `NULL` by default, and six of the
+  seven target columns are always `NULL` on any given row. Caught by
+  `scripts/verify-module-1-schema.sql` and fixed in migration
+  `20260825141400_fix_external_identifiers_uniqueness.sql`, switching to one partial unique index
+  per target column (the pattern `portfolio_members` already used correctly). Recorded here and
+  in `docs/MODULE_1A_ARCHITECTURE_PROPOSAL.md` Section L as the one deviation from the originally
+  approved design.
+- **14 migrations applied to the confirmed DEV/STAGING project** (`tjquptsksqjmvztvfgfp`), plus
+  one corrective migration — 15 total, covering extensions, shared trigger functions, 8 reference
+  registries (seeded), and 12 structural tables. `packages/database-types` regenerated from the
+  live schema. Verified via a self-rolling-back transactional test suite
+  (`scripts/verify-module-1-schema.sql`, wrapped by `npm run verify:module-1`, which refuses to
+  run unless `SUPABASE_ENV` is `development` or `staging`) covering relational integrity,
+  cross-tenant rejection, hierarchy cycle rejection, RLS default-deny, and multi-country global
+  context (India/Singapore/US) — 32/32 assertions passing, no fixture data left behind.
+- **Work branched on `feature/module-1-global-org-foundation`**, off a `main` that was confirmed
+  clean before branching. An unrelated, already-in-progress shadcn/ui integration (new `Button`
+  component, Tailwind preset/theme, `@platform/ui` wired into all three channel apps) was found
+  uncommitted on `main` at the start of this work; it was committed separately on `main` first
+  (not mixed into the Module 1 branch) so Module 1's branch and validation results stay isolated
+  from unrelated UI changes.
+
 ## 2026-08-24 — Module 0A: Remote Supabase Development Environment
 
 - **Remote Supabase Development/Staging project selected as the supported workflow, because

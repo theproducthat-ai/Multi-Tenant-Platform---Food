@@ -25,7 +25,8 @@
     "supabase:migrations": "supabase migration list --linked",
     "supabase:push": "supabase db push --linked",
     "supabase:types": "npm run generate --workspace=@platform/database-types",
-    "supabase:verify": "node scripts/verify-supabase-connection.mjs"
+    "supabase:verify": "node scripts/verify-supabase-connection.mjs",
+    "verify:module-1": "node scripts/verify-module-1-schema.mjs"
   },
   "devDependencies": {
     "turbo": "^2.3.3",
